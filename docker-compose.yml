@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:1.23.1-alpine
+    hostname: nginx
+    container_name: nginx
+    networks:
+      - meilinet
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/meilisearch.conf:/etc/nginx/conf.d/default.conf
+  meilisearch:
+    image: getmeili/meilisearch:v0.28
+    hostname: meilisearch
+    container_name: meilisearch
+    volumes:
+      - ./meili_data:/meili_data
+    environment:
+      MEILI_MASTER_KEY: MASTER_KEY
+      MEILI_ENV: development
+    networks:
+      - meilinet
+
+networks:
+    meilinet:
+        driver: bridge
