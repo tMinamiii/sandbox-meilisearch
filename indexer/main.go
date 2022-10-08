@@ -37,6 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 	id := int64(1)
+	docs := make([]map[string]any, 0)
 	for _, file := range files {
 		fp, err := os.Open(file)
 		if err != nil {
@@ -46,7 +47,6 @@ func main() {
 		defer fp.Close()
 
 		reader := csv.NewReader(fp)
-		docs := make([]map[string]any, 0, len(files))
 		for {
 			record, err := reader.Read()
 			if err == io.EOF {
@@ -65,6 +65,6 @@ func main() {
 			docs = append(docs, doc)
 			id++
 		}
-		index.AddDocuments(docs)
 	}
+	index.AddDocumentsInBatches(docs, 250)
 }
